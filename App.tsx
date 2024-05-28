@@ -24,6 +24,7 @@ const App = () => {
           component={LoginScreen}
           options={{headerShown: false}}
         />
+        {/* Home Screen Added */}
         <navStack.Screen 
           name='HomeScreen'
           component={HomeScreen}

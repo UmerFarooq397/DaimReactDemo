@@ -5,9 +5,9 @@ import DashboardScreen from './Dashboard';
 import TransactionScreen from './Transaction';
 import AccountsScreen from './Accounts';
 import SettingsScreen from './Settings';
-
 const Tab = createMaterialBottomTabNavigator();
 
+// Home Screen with Tabbar
 export default function HomeScreen() {
   return (
     <Tab.Navigator
