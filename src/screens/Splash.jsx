@@ -6,7 +6,7 @@ export default function SplashScreen(props) {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            props.navigation.navigate("HomeScreen")
+            props.navigation.navigate("LoginScreen")
          }, 2000)
         return () => clearInterval(interval)
     }, [])

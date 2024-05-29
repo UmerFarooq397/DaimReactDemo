@@ -1,4 +1,10 @@
 import React, { useState } from 'react';
+
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {z} from 'zod'
+import FormInput from './../compenents/Forminput';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
 
@@ -6,22 +12,37 @@ import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
 import { StyleSheet, Text, View, TextInput, Image, Alert, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useEffect } from 'react';
 
-export default function LoginScreen(props) {
-  const url = "https://croeminc-demoapi.sigmaprocess.net/api/TokenAuth/Authenticate"
 
-  const [userName, setUserName] = useState('');
-  const [password, setPassword] = useState('');
+const formSchema = z.object({
+  // email: z.string().email('Please enter a valid email'),
+  userName: z.string().min(4, 'Password must be at least 4 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+
+export default function LoginScreen(props) {
+
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+    userName: '',
+    password: '',
+    },
+    resolver: zodResolver(formSchema),
+  });
+
+  const url = "https://croeminc-demoapi.sigmaprocess.net/api/TokenAuth/Authenticate"
 
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = (formData) => {
+    const userName = formData.userName
+    const password = formData.password
     if(userName == '' || password == '') {
       Alert.alert("Invalid inputs.", 'Please enter valid data in the fields');
     }
     else {
       setLoading(true)
-      authenticateUser()
+      authenticateUser(userName, password)
     }
     
   };
@@ -114,7 +135,7 @@ export default function LoginScreen(props) {
     }
   };
 
-  const authenticateUser = async () => {
+  const authenticateUser = async (userName, password) => {
     const loginRequest = {
       userNameOrEmailAddress: userName,
       password: password
@@ -139,8 +160,6 @@ export default function LoginScreen(props) {
         console.warn("Successfully login");
         storeData(json.result.accessToken)
         props.navigation.navigate("HomeScreen")
-        setUserName('')
-        setPassword('')
       }
       else {
         Alert.alert("Invalid Credentials");
@@ -157,26 +176,21 @@ export default function LoginScreen(props) {
      />
 
       <Text style={styles.helloText}>¡Hola!</Text>
-      <TextInput
-        style={styles.input}
+      <FormInput
+        control={control}
+        name={'userName'}
         placeholder="Ingresa tu usuario/correo electrónico"
-        placeholderTextColor="black" 
-        onChangeText={text=> {setUserName(text)}}
-        inputMode="email"
-        value={userName}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="black" 
-        onChangeText={text => {setPassword(text)}}
-        inputMode="text"
-        value={password}
-        secureTextEntry = {true}
+      <FormInput
+        control={control}
+        name={'password'}
+        placeholder='password'
+        secureTextEntry
       />
+     
       <TouchableOpacity
         style={styles.buttons}
-        onPress={handleLogin}
+        onPress={handleSubmit(handleLogin)}
         disabled={loading}
       >
       <Text style={styles.buttonText}>Entrar</Text>

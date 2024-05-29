@@ -1,6 +1,4 @@
 import { View, Text } from 'react-native';
-import { useEffect, useState } from 'react';
-
 
 export default function SettingsScreen(props) {
     return (
