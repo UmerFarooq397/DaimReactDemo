@@ -15,14 +15,14 @@ export default function SettingsScreen(props) {
       <View style={style.userContainer}>
         <View style={style.notificationContainer}>
             <View style={style.daimLogoConatiner}>
-                <Image style={style.daimLogoImage} source={require('../resources/images/dashboard_logo.png')}/>
+                <Image style={style.daimLogoImage} source={require('../resources/images/profile_logo.png')}/>
             </View>
             <View style={style.notificationIconContainer}>
-                <Image style={style.notificationIcon} source={require('../resources/images/gift_icon.png')}/>
+                <Image style={style.notificationIcon} source={require('../resources/images/bell_icon.png')}/>
             </View>
         </View>
         <View style={style.profileImageContainer}>
-            <Image style={style.profileImage} source={require('../resources/images/recharge_icon.png')}/>
+            <Image style={style.profileImage} source={require('../resources/images/Edit.png')}/>
             <View style={style.editorConatiner}>
                 <Text style={style.editLable}>Editar</Text>
             </View>
@@ -61,17 +61,16 @@ const style = StyleSheet.create({
  daimLogoConatiner: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: 'blue',
     justifyContent: 'center',
-    marginLeft: 16
+    marginLeft: 16,
  },
  daimLogoImage: { 
-    width: 70, 
+    width: 100, 
     height: 50, 
     resizeMode: 'contain'
  },
  notificationIconContainer: { 
-    backgroundColor: 'grey', 
+    backgroundColor: '#D3D3D3', 
     borderRadius: 20, 
     justifyContent: 'center', 
     marginRight: 16,
@@ -84,10 +83,10 @@ notificationIcon: {
 },
 profileImageContainer: {
     flex: 0.4, 
-    width: '100%', 
+    width: '40%', 
+    position: 'relative', // Ensure the container is relative for absolute positioning to work inside
     justifyContent: 'center', 
     alignItems: 'center', 
-    backgroundColor: 'black',
     flexDirection: 'row'
 },
 profileImage: {
@@ -97,7 +96,11 @@ profileImage: {
 },
 editorConatiner: {
     backgroundColor: 'white',
-    flexDirection: 'column'
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    padding: 5, // Optional: Add some padding around the text
+    borderRadius: 5, // Optional: Add some border radius
 },
 editLable: {
     color: 'blue',
