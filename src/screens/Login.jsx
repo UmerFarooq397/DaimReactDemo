@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {z} from 'zod'
 import FormInput from './../compenents/Forminput';
@@ -9,8 +9,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
 
 
-import { StyleSheet, Text, View, TextInput, Image, Alert, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Image, Alert, TouchableOpacity } from 'react-native';
 import { useEffect } from 'react';
+import { LoadingScreen} from './../compenents/LoadingScreen'
 
 
 const formSchema = z.object({
@@ -41,7 +42,7 @@ export default function LoginScreen(props) {
       Alert.alert("Invalid inputs.", 'Please enter valid data in the fields');
     }
     else {
-      setLoading(true)
+      // setLoading(true)
       authenticateUser(userName, password)
     }
     
@@ -201,11 +202,7 @@ export default function LoginScreen(props) {
         onPress={handleRegister}
       ><Text style={styles.buttonText}>Ingresar con huella</Text>
       </TouchableOpacity>
-      {loading && (
-        <View style={styles.loading}>
-            <ActivityIndicator size="large" color="#50A5F1" />
-        </View>
-      )}
+      {/* {loading && <LoadingScreen />} */}
     </View>
   );
 }

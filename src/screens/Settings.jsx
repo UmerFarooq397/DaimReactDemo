@@ -1,17 +1,105 @@
-import { View, FlatList, StyleSheet, Image, Text } from 'react-native';
+import { View, FlatList, StyleSheet, Image, Text, Pressable, Alert } from 'react-native';
 import SettingsItem from '../compenents/SettingsItem';
 import ToolBar from '../compenents/ToolBar';
 import { SETTINGS } from '../data/Data';
+import { useState } from 'react'
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import LoadingScreen from './../compenents/LoadingScreen'; // Make sure to use the correct path
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 
 export default function SettingsScreen(props) {
-  
+  const url = "https://croeminc-demoapi.sigmaprocess.net/api/services/app/User/ChangeProfilePicture"
+  const [photo, setPhoto] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const uploadProfilePic = async (photo) => {
+    const value = await AsyncStorage.getItem('accessToken')
+    console.log('Access Token:::: ', value);
+    const fileUploadRequest = {
+      fileBase64: photo,
+    }    
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'bearer ' + value
+      },
+      body: JSON.stringify(
+        fileUploadRequest
+        )
+    })
+    .then((resp) => resp.json())
+    .then((json) => {
+      // setData(json)
+      console.log(json)
+      if(json.success == true) {
+        Alert.alert("Profile Picture updated successfully.");
+      }
+      else {
+        Alert.alert(json.error.message);
+      }
+    })
+    .catch((error) => console.error(error))
+    .finally(() => setLoading(false));
+  }
+
+  const selectImage = () => {
+    let options = {
+      mediaType: 'photo',
+      quality: 1,
+      includeBase64: true
+    };
+    
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.errorCode) {
+        console.log('ImagePicker Error: ', response.errorCode);
+      } else {
+        // console.log(response.assets[0].base64);
+        const source = { uri: response.assets[0].uri };
+        // console.log(source);
+        setPhoto(source);
+        setLoading(true)
+        uploadProfilePic(response.assets[0].base64)
+        // Convert image to base64
+        // RNFetchBlob.fs.readFile(response.uri, 'base64')
+        //   .then((data) => {
+        //     uploadProfilePic(data);
+        //   })
+        //   .catch((error) => {
+        //     console.error(error);
+        //   });
+      }
+    });
+  };
+  const takePhoto = () => {
+    let options = {
+      mediaType: 'photo',
+      quality: 1,
+    };
+
+    launchCamera(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled camera');
+      } else if (response.errorCode) {
+        console.log('Camera Error: ', response.errorCode);
+      } else {
+        const source = { uri: response.assets[0].uri };
+        setPhoto(source);
+      }
+    });
+  };
   return (
     <View style={style.viewContainer}>
       <View style={style.toolBarConatiner}>
         <ToolBar title="Administración"></ToolBar>
       </View>
-
+      
       <View style={style.userContainer}>
         <View style={style.notificationContainer}>
             <View style={style.daimLogoConatiner}>
@@ -21,11 +109,20 @@ export default function SettingsScreen(props) {
                 <Image style={style.notificationIcon} source={require('../resources/images/bell_icon.png')}/>
             </View>
         </View>
+
         <View style={style.profileImageContainer}>
-            <Image style={style.profileImage} source={require('../resources/images/Edit.png')}/>
-            <View style={style.editorConatiner}>
-                <Text style={style.editLable}>Editar</Text>
-            </View>
+          {photo ? (
+              <Image style={style.profileImage} source={photo} />
+          ) : (
+              <Image style={style.profileImage} source={require('../resources/images/Edit.png')} />
+          )}
+          <Pressable style={style.editorConatiner}
+            onPress={() => {
+              selectImage()
+            }}
+          >
+            <Text style={style.editLable}>Editar</Text>
+          </Pressable>
             
         </View>
         <View style={style.userNameContainer}>
@@ -42,6 +139,7 @@ export default function SettingsScreen(props) {
             keyExtractor={item => item.id}
         />
       </View>
+      {loading && <LoadingScreen />}
     </View>
   );
 }
@@ -92,7 +190,8 @@ profileImageContainer: {
 profileImage: {
     width: 50, 
     height: 50, 
-    resizeMode: 'contain'
+    resizeMode: 'contain',
+    borderRadius: 25
 },
 editorConatiner: {
     backgroundColor: 'white',
