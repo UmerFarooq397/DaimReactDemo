@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function SettingsScreen(props) {
-  const url = "https://croeminc-demoapi.sigmaprocess.net/api/services/app/User/ChangeProfilePicture"
+  const url = "http://daimapidev.sigmaprocess.net/api/services/app/User/ChangeProfilePicture"
   const [photo, setPhoto] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -140,6 +140,7 @@ export default function SettingsScreen(props) {
         />
       </View>
       {loading && <LoadingScreen />}
+      
     </View>
   );
 }

@@ -30,7 +30,7 @@ export default function LoginScreen(props) {
     resolver: zodResolver(formSchema),
   });
 
-  const url = "https://croeminc-demoapi.sigmaprocess.net/api/TokenAuth/Authenticate"
+  const url = "http://daimapidev.sigmaprocess.net/api/TokenAuth/Authenticate"
 
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -202,7 +202,7 @@ export default function LoginScreen(props) {
         onPress={handleRegister}
       ><Text style={styles.buttonText}>Ingresar con huella</Text>
       </TouchableOpacity>
-      {/* {loading && <LoadingScreen />} */}
+      {loading && <LoadingScreen />}
     </View>
   );
 }
